@@ -57,26 +57,33 @@ variety <- "A"  # "A" or "B"
 # Set the path to the protocol description file to use (EXCEL file that describe the tables)
 ## replace path_to_protocol_description_file in the following line by the actual path to 
 ## the protocol description file (including its name).  
-xls_path <- "path_to_protocol_description_file"
+xls_path <- "/carl-data/shared/users/mmehmoo/AgMIP-Calibration-Phase-IV/data/CERES_Mehmood_v5.xlsx"
   
 # Set-up your model wrapper
 ## Source the file including your model wrapper: 
 ## replace path_to_my_model_wrapper in the following line by the actual path to 
 ## the file including the code of your model wrapper  
 ## Or load the package including your model wrapper
-source("path_to_my_model_wrapper")
+source("/carl-data/shared/users/mmehmoo/AgMIP-Calibration-Phase-IV/DSSAT-wrapper/R/DSSAT_wrapper.R")
 
 ## Give here the link to your model wrapper function: replace my_model_wrapper_function
 ## by the actual name of the function defining your model wrapper.
-model_wrapper <- my_model_wrapper_function
+model_wrapper <- DSSAT_wrapper
 
 # Define model_options depending on your model wrapper
-model_options <- 
+model_options <- vector("list")
+model_options$DSSAT_path <- "/carl-data/shared/users/mmehmoo/AgMIP-Calibration-Phase-IV/DSSAT48"
+model_options$DSSAT_exe <-  "dscsm048"
+model_options$Crop <- "Wheat"
+model_options$ecotype_filename <- "WHCER048.ECO"
+model_options$cultivar_filename <- "WHCER048.CUL"
+model_options$ecotype <-  "FRWH01"
+model_options$cultivar <- "Apache"
 
 # Give here the type of reference date used for computing julian days for phenological stages
 # should be equal to "SowingYear" if julian days are computed from the beginning of the sowing year
 # or "SowingDate" if julian days are computed from the sowing date.
-descr_ref_date <- "SowingYear"
+descr_ref_date <- "SowingDate"
 
 # Define model output transformation(s) if necessary (OPTIONAL)
 # Useful if one (or several) observed variable is not directly comparable to a 
@@ -114,6 +121,34 @@ transform_inputs <- NULL
 #   transform_inputs <- c("QNplante")
 #   
 # }
+
+if (test_case=="French") {
+  transform_sim <- function(model_results, ...) {
+
+    # Create the new variable for each situation included in model_results$sim_list
+    for (sit in names(model_results$sim_list)) {
+      model_results$sim_list[[sit]]$BBCH10 <-
+        model_results$sim_list[[sit]]$
+      
+      model_results$sim_list[[sit]]$BBCH30 <-
+        model_results$sim_list[[sit]]$
+      
+      model_results$sim_list[[sit]]$BBCH55 <-
+        model_results$sim_list[[sit]]$
+      
+      model_results$sim_list[[sit]]$BBCH90 <-
+        model_results$sim_list[[sit]]$
+      
+      model_results$sim_list[[sit]]$`HP%M` <-
+        model_results$sim_list[[sit]]$`HN%M`*6.25
+    }
+    return(model_results)
+  }
+
+  transform_outputs <- c("BBCH10", "BBCH30", "BBCH55", "BBCH90", "HP%M")
+  transform_inputs <- c("GSTD", "DCCD", "HN%M")
+
+}
 
 
 # Set-up output results folder (OPTIONAL, set to results/test_case/variety by default)
