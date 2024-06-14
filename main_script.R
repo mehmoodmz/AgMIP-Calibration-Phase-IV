@@ -28,11 +28,8 @@ if(!require("here")){
 source(file.path(here(),"R/install_load.r"))
 install_load()
 
-options(warn=1) 
+options(warn=1)
 
-################################################################################
-###### Initialization step => to be adapted to your case #######################
-###### please read the comments and give the required information
 ################################################################################
 
 # DEBUG mode (set to TRUE to test the protocol with limited number of situations, repetitions and evaluations, 
@@ -54,17 +51,74 @@ variety <- "A"  # "A" or "B"
 # test_case <- "Australian"
 # variety <- "Janz"
 
+################################################################################
+
+# Model code
+#model_name <- "CERES"
+#model_name <- "CROPSIM"
+#model_name <- "NWHEAT"
+
+# Read environment variables
+user <- Sys.info()["user"]
+node_name <- Sys.info()["nodename"]
+
+# Set up root_dir and dssat_path
+if(node_name == "hpc-cloud-carl2"){
+  root_dir <- file.path("/carl-data/shared/users", user, "AgMIP-Calibration-Phase-IV")
+  DSSAT_path <- file.path("/carl-data/shared/users", user, "AgMIP-Calibration-Phase-IV/DSSAT48")
+  
+}else{
+  root_dir <- file.path("/home", user, "AgMIP-Calibration-Phase-IV")
+  DSSAT_path <- file.path(Sys.getenv("TDIR"), "DSSAT48")
+}
+
+# Set up out directory
+if(node_name == "hpc-cloud-carl2"){
+  dir.create(file.path(root_dir, "results"), recursive = TRUE)
+  dir.create(file.path(root_dir, "results", test_case), recursive = TRUE)
+  dir.create(file.path(root_dir, "results", test_case, variety), recursive = TRUE)
+  dir.create(file.path(root_dir, "results", test_case, variety, model_name), recursive = TRUE)
+}else{
+  dir.create(file.path("/scratch", user, "results"), recursive = TRUE)
+  dir.create(file.path("/scratch", user, "results", test_case), recursive = TRUE)
+  dir.create(file.path("/scratch", user, "results", test_case, variety), recursive = TRUE)
+  dir.create(file.path("/scratch", user, "results", test_case, variety, model_name), recursive = TRUE)
+}
+
+
+# Set-up output results folder (OPTIONAL, set to results/test_case/variety by default)
+# the following lines will set it to project_path/results/test_case/variety
+# can be changed if needed
+out_dir <-
+  if(node_name == "hpc-cloud-carl2"){
+    file.path(root_dir, "results", test_case, variety, model_name)
+  }else{
+    file.path("/scratch", user, "results", test_case, variety, model_name)
+  }
+
+################################################################################
+###### Initialization step => to be adapted to your case #######################
+###### please read the comments and give the required information
+################################################################################
+
 # Set the path to the protocol description file to use (EXCEL file that describe the tables)
 ## replace path_to_protocol_description_file in the following line by the actual path to 
 ## the protocol description file (including its name).  
-xls_path <- "/carl-data/shared/users/mmehmoo/AgMIP-Calibration-Phase-IV/data/CERES_Mehmood_v5.xlsx"
+xls_path <-
+  if (model_name == "CERES") {
+    file.path(root_dir, "data/CERES_Mehmood_v5.xlsx")
+  } else if (model_name == "CROPSIM") {
+    file.path(root_dir, "data/CROPSIM_Mehmood_v5.xlsx")
+  } else {
+    file.path(root_dir, "data/NWHEAT_Mehmood_v5.xlsx")
+  }
   
 # Set-up your model wrapper
 ## Source the file including your model wrapper: 
 ## replace path_to_my_model_wrapper in the following line by the actual path to 
 ## the file including the code of your model wrapper  
 ## Or load the package including your model wrapper
-source("/carl-data/shared/users/mmehmoo/AgMIP-Calibration-Phase-IV/DSSAT-wrapper/R/DSSAT_wrapper.R")
+source(file.path(root_dir, "DSSAT-wrapper/R/DSSAT_wrapper.R"))
 
 ## Give here the link to your model wrapper function: replace my_model_wrapper_function
 ## by the actual name of the function defining your model wrapper.
@@ -72,13 +126,40 @@ model_wrapper <- DSSAT_wrapper
 
 # Define model_options depending on your model wrapper
 model_options <- vector("list")
-model_options$DSSAT_path <- "/carl-data/shared/users/mmehmoo/AgMIP-Calibration-Phase-IV/DSSAT48"
-model_options$DSSAT_exe <-  "dscsm048"
+model_options$DSSAT_path <- DSSAT_path
+model_options$DSSAT_exe <-  "dscsm048_annex6"
 model_options$Crop <- "Wheat"
-model_options$ecotype_filename <- "WHCER048.ECO"
-model_options$cultivar_filename <- "WHCER048.CUL"
+model_options$cultivar_filename <- 
+  if (model_name == "CERES") {
+    "WHCER048.CUL"
+  } else if (model_name == "CROPSIM") {
+    "WHCRP048.CUL"
+  } else {
+    "WHAPS048.CUL"
+  }
+  
+model_options$ecotype_filename <- 
+  if (model_name == "CERES") {
+    "WHCER048.ECO"
+  } else if (model_name == "CROPSIM") {
+    "WHCRP048.ECO"
+  } else {
+    "WHAPS048.ECO"
+  }
+  
 model_options$ecotype <-  "FRWH01"
-model_options$cultivar <- "Apache"
+model_options$cultivar <- "FR0001"
+
+
+# Define output variables names
+var <- 
+  if (model_name == "NWHEAT") {
+    c("BBCH10", "BBCH30", "BBCH55", "BBCH90", "CWAD", "VN%M", "H#AM", "HWAM", "HP%M")
+  } else {
+    c("BBCH10", "BBCH30", "BBCH55", "BBCH90", "CWAD", "T#AM", "VN%M", "H#AM", "HWAM", "HP%M")
+  }
+  
+  
 
 # Give here the type of reference date used for computing julian days for phenological stages
 # should be equal to "SowingYear" if julian days are computed from the beginning of the sowing year
@@ -106,6 +187,7 @@ descr_ref_date <- "SowingDate"
 transform_sim <- NULL
 transform_outputs <- NULL
 transform_inputs <- NULL
+
 # if (test_case=="French") {
 #   transform_sim <- function(model_results, ...) {
 #     
@@ -122,39 +204,6 @@ transform_inputs <- NULL
 #   
 # }
 
-if (test_case=="French") {
-  transform_sim <- function(model_results, ...) {
-
-    # Create the new variable for each situation included in model_results$sim_list
-    for (sit in names(model_results$sim_list)) {
-      model_results$sim_list[[sit]]$BBCH10 <-
-        model_results$sim_list[[sit]]$
-      
-      model_results$sim_list[[sit]]$BBCH30 <-
-        model_results$sim_list[[sit]]$
-      
-      model_results$sim_list[[sit]]$BBCH55 <-
-        model_results$sim_list[[sit]]$
-      
-      model_results$sim_list[[sit]]$BBCH90 <-
-        model_results$sim_list[[sit]]$
-      
-      model_results$sim_list[[sit]]$`HP%M` <-
-        model_results$sim_list[[sit]]$`HN%M`*6.25
-    }
-    return(model_results)
-  }
-
-  transform_outputs <- c("BBCH10", "BBCH30", "BBCH55", "BBCH90", "HP%M")
-  transform_inputs <- c("GSTD", "DCCD", "HN%M")
-
-}
-
-
-# Set-up output results folder (OPTIONAL, set to results/test_case/variety by default)
-# the following lines will set it to project_path/results/test_case/variety
-# can be changed if needed
-out_dir <- file.path(here(),"results",test_case,variety)
 
 # Synthetic observation mode (set to TRUE to test the protocol using synthetic observations 
 #                                    FALSE to apply phaseIV protocol to real data)
