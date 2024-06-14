@@ -215,7 +215,7 @@ obs_data %>%
                          BBCH55 = "%6.0f",
                          BBCH90 = "%6.0f")
                ) %>%
-  select(TRNO, `T#AM`, `H#AM`, `HP%M`, `VN%M`, HWAM, BBCH30, BBCH55, BBCH90) %>%
+  select(TRNO, HDAT, `T#AM`, `H#AM`, `HP%M`, `VN%M`, HWAM, BBCH30, BBCH55, BBCH90) %>%
   `attr<-`("experiment", "AgMIP Phase-IV") %>% 
   write_filea("FRWHCER1.WHA")
 
@@ -263,9 +263,7 @@ file_x_data <-
               mutate(HDATE = as.POSIXct(HarvestDate, tz = "UTC", format = "%d/%m/%Y")) %>% 
               select(TRNO, TNAME, HDATE) %>% 
               drop_na()) %>% 
-  arrange(TRNO) %>%
-  ############################################################################################################################
-  mutate(HDATE = as.POSIXct(ifelse(is.na(HDATE), PDATE + lubridate::days(300), HDATE), tz = "UTC", format = "%d/%m/%Y"))
+  arrange(TRNO)
 
 fdate <-
   input_data %>% 
@@ -342,7 +340,7 @@ file_x$TREATMENTS <-
          MC = 0,
          MT = 0,
          ME = 0,
-         MH = 1:n(),
+         MH = 0,
          SM = 1:n()) %>%
   select(N, R, O, C, TNAME, CU, FL, SA, IC, MP, MI, MF, MR, MC, MT, ME, MH, SM)
 
@@ -414,7 +412,7 @@ file_x$`SIMULATION CONTROLS` <-
          PHOTO = "C",
          MESOL = 3,
          FERTI = "R",
-         HARVS = "R",
+         HARVS = "M",
          GROUT = "Y",
          WAOUT = "Y") %>% 
   select(-SNAME, -SDATE, -N) %>% 
@@ -437,20 +435,6 @@ file_x$FERTILIZERS <-
          FOCD = NA_real_,
          FERNAME = TNAME) %>% 
   select(F, FDATE, FMCD, FACD, FDEP, FAMN, FAMP, FAMK, FAMC, FAMO, FOCD, FERNAME)
-
-## File_x HARVEST DETAILS
-file_x$`HARVEST DETAILS` <-
-  file_x_data %>%
-  mutate(H = TRNO,
-         HDATE = HDATE,
-         HSTG = "GS006",
-         HCOM = "H",
-         HSIZE = "A",
-         HPC = 100,
-         HBPC = NA,
-         HNAME = TNAME) %>%
-  select(H, HDATE, HSTG, HCOM, HSIZE, HPC, HBPC, HNAME)
-
 
 ## File_x INITIAL CONDITIONS
 file_x$`INITIAL CONDITIONS` <-
@@ -487,7 +471,7 @@ file_x$`INITIAL CONDITIONS` <-
   .}
 
 file_x <- file_x[c("GENERAL", "TREATMENTS", "CULTIVARS", "FIELDS", "INITIAL CONDITIONS",
-                   "PLANTING DETAILS", "FERTILIZERS", "HARVEST DETAILS", "SIMULATION CONTROLS")]
+                   "PLANTING DETAILS", "FERTILIZERS", "SIMULATION CONTROLS")]
 
 ## Create file_x for CERES
 write_filex(file_x, "FRWHCER1.WHX")
@@ -598,6 +582,14 @@ user <- Sys.info()["user"]
 root_dir <- paste0("/carl-data/shared/users/", user, "/AgMIP-Calibration-Phase-IV")
 run_dir <- paste0(root_dir, "/DSSAT48/Wheat")
 setwd(run_dir)
+
+################################################################################
+
+# Run these lines in terminal if SCP DSSAT48 from CARL
+#scp -r /carl-data/shared/carl/DSSAT48 /carl-data/shared/users/mmehmoo/AgMIP-Calibration-Phase-IV
+#cd DSSAT48
+#sed -i 's/\/carl\//\/users\/mmehmoo\/AgMIP-Calibration-Phase-IV\//g' DSSATPRO.L48
+#sed -i 's/\/users\/mmehmoo\/AgMIP-Calibration-Phase-IV\/DSSAT48/\/carl\/mmehmoo_DSSAT48/p' DSSATPRO.L48
 
 ################################################################################
 
