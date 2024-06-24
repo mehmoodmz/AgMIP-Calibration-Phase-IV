@@ -46,7 +46,7 @@ install_load <- function() {
   }
   
   
-  invisible(lapply(list.files(file.path(here(),"R"), full.names=TRUE), function(x) source(x)))
+  invisible(lapply(list.files(file.path(root_dir,"R"), full.names=TRUE), function(x) source(x)))
   
 }
 
