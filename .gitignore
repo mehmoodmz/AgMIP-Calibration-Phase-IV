@@ -2,7 +2,7 @@
 .Rhistory
 .RData
 .Ruserdata
-results/
+results*
 data - SAVE
 DSSAT-wrapper
 DSSAT48
