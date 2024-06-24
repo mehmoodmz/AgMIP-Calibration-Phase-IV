@@ -20,18 +20,6 @@
 # Author: Samuel Buis
 ################################################################################
 
-# Install and load the needed libraries
-if(!require("here")){
-  install.packages("here")
-  library("here")
-}
-source(file.path(here(),"R/install_load.r"))
-install_load()
-
-options(warn=1)
-
-################################################################################
-
 # DEBUG mode (set to TRUE to test the protocol with limited number of situations, repetitions and evaluations, 
 #                    FALSE to run phaseIV exercise)
 debug <- TRUE
@@ -95,6 +83,18 @@ out_dir <-
   }else{
     file.path("/scratch", user, "results", test_case, variety, model_name)
   }
+
+################################################################################
+
+# Install and load the needed libraries
+# if(!require("here")){
+#   install.packages("here")
+#   library("here")
+# }
+source(file.path(root_dir,"R/install_load.r"))
+install_load()
+
+options(warn=1)
 
 ################################################################################
 ###### Initialization step => to be adapted to your case #######################
@@ -257,10 +257,10 @@ if (test_case=="Australian" & data_without_Minnipa) {
 } else {
   obs_data_folder <- "data"
 }
-obs_data_path <- file.path(here(),obs_data_folder,paste0("cal_4_obs_",test_case,suffix,".txt"))
-obs_unit_path <- file.path(here(),obs_data_folder,paste0("cal_4_obs_",test_case,"_units.csv"))
+obs_data_path <- file.path(root_dir,obs_data_folder,paste0("cal_4_obs_",test_case,suffix,".txt"))
+obs_unit_path <- file.path(root_dir,obs_data_folder,paste0("cal_4_obs_",test_case,"_units.csv"))
 ## Get the reference date for each situation
-template_path <- file.path(here(),"data",paste0("simulations_template.txt"))
+template_path <- file.path(root_dir, "data",paste0("simulations_template.txt"))
 ref_date <- get_reference_date(descr_ref_date, template_path)
 
 obs <- load_obs(obs_data_path, obs_unit_path, varNames_corresp,
@@ -624,7 +624,11 @@ generate_results_files(param_group, model_options,
                        transform_var_converted)
 # Copying script and protocol files in result folder
 file.copy(from=xls_path, to=out_dir, overwrite = TRUE)
-file.copy(from=rstudioapi::getSourceEditorContext()$path, to=out_dir, overwrite = TRUE)
+if(node_name == "hpc-cloud-carl2"){
+  file.copy(from=file.path(root_dir, paste0("main_script.R")), to=out_dir, overwrite = TRUE)
+}else{
+  file.copy(from=file.path(root_dir, paste0("main_script", "_", model_name, ".R")), to=out_dir, overwrite = TRUE)
+}
 
 # Displaying Results
 cat("\n----------------------\n")
