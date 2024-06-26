@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -p express
+#SBATCH -p batch
 #SBATCH -t 120:00:00
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=32
