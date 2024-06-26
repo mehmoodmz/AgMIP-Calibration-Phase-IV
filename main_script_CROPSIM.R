@@ -22,7 +22,7 @@
 
 # DEBUG mode (set to TRUE to test the protocol with limited number of situations, repetitions and evaluations, 
 #                    FALSE to run phaseIV exercise)
-debug <- TRUE
+debug <- FALSE
 
 # Checkpoint-restart mode (set to TRUE will save temporary results in Rdata files 
 # so that in case of crash the script can be re-run from the last successful step,
