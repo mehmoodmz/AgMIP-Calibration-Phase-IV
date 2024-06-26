@@ -13,7 +13,7 @@ pushd ${TDIR}
 
 cp -r /home/zeeshan/DSSAT48 ${TDIR}
 
-TDIR=${TDIR} R -f /home/zeeshan/AgMIP-Calibration-Phase-IV/main_script.R
+TDIR=${TDIR} R -f /home/zeeshan/AgMIP-Calibration-Phase-IV/main_script_CERES.R
 
 popd
 rm -rf ${TDIR}
