@@ -150,21 +150,10 @@ model_options$ecotype_filename <-
 model_options$ecotype <-  "FRWH01"
 model_options$cultivar <- "FR0001"
 
-
-# Define output variables names
-var <- 
-  if (model_name == "NWHEAT") {
-    c("BBCH10", "BBCH30", "BBCH55", "BBCH90", "CWAD", "VN%M", "H#AM", "HWAM", "HP%M")
-  } else {
-    c("BBCH10", "BBCH30", "BBCH55", "BBCH90", "CWAD", "T#AM", "VN%M", "H#AM", "HWAM", "HP%M")
-  }
-  
-  
-
 # Give here the type of reference date used for computing julian days for phenological stages
 # should be equal to "SowingYear" if julian days are computed from the beginning of the sowing year
 # or "SowingDate" if julian days are computed from the sowing date.
-descr_ref_date <- "SowingDate"
+descr_ref_date <- "SowingYear"
 
 # Define model output transformation(s) if necessary (OPTIONAL)
 # Useful if one (or several) observed variable is not directly comparable to a 
@@ -204,6 +193,21 @@ transform_inputs <- NULL
 #   
 # }
 
+if (test_case=="French") {
+   transform_sim <- function(model_results, ...) {
+     
+     # Create the new variable for each situation included in model_results$sim_list
+     for (sit in names(model_results$sim_list)) {
+       model_results$sim_list[[sit]]$`HP%M1` <- 
+         model_results$sim_list[[sit]]$`HN%M` * 6.25 
+     }
+     return(model_results)  
+   }
+   
+   transform_outputs <- c("HP%M1")
+   transform_inputs <- c("HN%M")
+   
+ }
 
 # Synthetic observation mode (set to TRUE to test the protocol using synthetic observations 
 #                                    FALSE to apply phaseIV protocol to real data)
