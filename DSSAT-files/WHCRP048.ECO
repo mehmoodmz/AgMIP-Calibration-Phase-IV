@@ -1,0 +1,54 @@
+$ECOTYPES:WHCRP048.20200721   Last edit: 2020-07-21 CHP
+
+!
+! COEFF   DEFINITION
+! =====   ==========
+! AWNS    Awn score (0-10;10=very long)
+! ECO#    Ecotype code (text)
+! GM%H    Grain moisture percentage at harvest (%)
+! GN%MN   Minimum grain nitrogen (%)
+! GN%S    Standard grain nitrogen concentration (%)
+! HTSTD   Standard canopy height (cm)
+! KCAN    PAR extinction coefficient (#)
+! LSENI   Leaf senescence,intermediate phases (%/standard day)
+! LSPHE   Leaf senescence (final) phase end stage (GrowthStage)
+! LSPHS   Leaf senescence (final) phase start stage (GrowthStage)
+! PARU2   PAR conversion factor,after change (g dry matter/MJ)
+! PARUE   PAR conversion factor,standard (g dry matter/MJ)
+! PHFn    Factor by which PHINTS multiplied -> PHINT for particular phase (#)
+! PHLn    Leaf # at end of phyllochron phase (ie,at which PHINT changes) (#)
+! RDGS    Root depth growth rate,standard (cm/standard day)
+! RS%A    Reserves concentration in tops at start of anthesis (%)
+! SLAS    Specific leaf area,standard (cm2/g)
+! SSPHE   Stem senescence (final) phase end stage (GrowthStage)
+! SSPHS   Stem senescence (final) phase start stage (GrowthStage)
+! TDFAC   Tiller death factor (%/st.day when tiller wt 2xstandard wt)
+! TDPHE   Tiller death phase end stage (GrowthStage)
+! TDPHS   Tiller death phase start stage (GrowthStage)
+! TDSF    Tiller death stress factor (#;0,2->no,full stress acceleration)
+! TIFAC   Tiller initiation (rate) factor (fr of phyllochron based) (#)
+! TIL#S   Tillering phase (production) start stage (leaf #)
+! TILPE   Tillering phase (production) end (GrowthStage)
+! TKFH    Cold tolerance when fully hardened (oC)
+!
+! Coefficients presented here differ from those used in previous
+! model versions. They have been developed by taking into account
+! the characteristics of a limited number of groups of cultivars.
+! The groupings are likely to change as more experience is gained,
+! and they should should not be taken as 'fixed'.
+! Users should be aware that some of the coefficients are likely
+! to vary from region to region,reflecting either an incomplete
+! understanding of the environmental physiology of wheat,or an
+! inadequate incorporation of aspects of current understanding.
+! For example,PARUE may vary from region to region,possibly
+! because of variation in the proportion of diffuse radiation
+! in the incoming solar and sky components,or because of
+! differences in the contribution of photosynthetic surfaces
+! not accounted for in the model (eg.awns,peduncles),or even
+! because of differences in disease intensities.
+!                        --MAX_RUE--  LEAF_APPEARANCE,AREA/WT,SENESCENCE TILLER_PRODUCTION ------TILLER_DEATH----- ROOTS -----CANOPY------  ------COMPOSITION-----  KILL STEM_SENECE
+!                            1     2     3     4     5     6     7     8     9    10    11    12    13    14    15    16    17    18    19    20    21    22    23    24    25    26
+!                         g/MJ  g/MJ   Lf#   Fac cm2/g   %/d GrStg GrStg   Lf# GrStg   Fac GrStg GrStg   Fac   Fac  cm/d    cm Score   Exp     %     %     %     %    oC GrStg GrStg
+
+@ECO#  ECONAME.......... PARUE PARU2  PHL2  PHF3  SLAS LSENI LSPHS LSPHE TIL#S TILPE TIFAC TDPHS TDPHE TDFAC  TDSF  RDGS HTSTD  AWNS  KCAN  RS%A  GN%S GN%MN  GM%H  TKFH SSPHS SSPHE
+FRWH01 FRWHEAT             2.7   2.7    15   1.5   485   0.3   8.7   9.2   4.5   3.0   0.2   3.0   9.0  12.0     1     3   100     0  0.85    25   2.5   1.0    15   -10   8.5   9.7

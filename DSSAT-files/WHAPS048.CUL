@@ -1,0 +1,36 @@
+*WHEAT CULTIVAR COEFFICIENTS: WHAPS048 MODEL
+
+!
+! ********** NWheat transition Cultivar Coefficient File ***************
+!
+! (Comments Here)
+!
+! COEFF       DEFINITIONS
+! ========    ===========
+! VAR#        Identification code or number for a specific cultivar
+! VAR-NAME    Name of cultivar
+! EXPNO       Number of experiments used to estimate cultivar parameters
+! ECO#        Ecotype code of this cultivar, points to the Ecotype in the ECO file.
+!
+! VSEN	      sensitivity to vernalisation
+! PPSEN       sensitivity to photoperiod
+! P1	        Thermal time from seedling emergence to the end of the juvenile phase
+! P5	        Thermal time (base 0oC) from beginning of grainfill to maturity: range 500 to 700
+! PHINT       Phyllochron interval
+! GRNO        Coefficient of kernel number per stem weight at the beginning of grain filling [kernels (g stem)-1]
+! MXFIL       Potential kernel growth rate [mg kernel-1 day-1]:  Values between 1.0 and 3.0
+! STMMX       Potential final dry weight of a single tiller (excluding grain) (g stem-1) values 1.0 - 3.0
+! SLAP1       ratio of leaf area to mass at emergence (cm2/g)
+!
+!             P/G/N:Phenology/Growth/Not used for calbration
+! 																   *	 *     *				   *     *
+! Coeffient #                             1     2     3     4     5     6     7     8     9
+! Calibration                             P     P     P     P     P     G     G     G     G
+! Three cultivars existing in CERES-Wheat added to NWheat by Yujing 05/05/2017
+! 4.8.0 cultivar coefficients (before changes in soil temperature subroutine)
+! IB1500 MANITOU           1,14 DFAULT  0.66  4.23 330.0 277.0  86.0 30.67  1.47  1.28 280.0
+! IB0488 NEWTON             1,6 DFAULT  3.69  3.17 520.0 457.0  95.0 33.33  1.91  1.03 280.0
+! IB1015 MARIS FUNDIN       1,8 DFAULT  2.46  3.51 530.0 472.0 100.0  20.0  2.81  1.64 300.0
+
+@VAR#  VRNAME.......... EXPNO   ECO#  VSEN PPSEN    P1    P5 PHINT  GRNO MXFIL STMMX SLAP1
+FR0001 Apache               . FRWH01 1.957 3.677 514.4 490.3 104.8 31.92 2.250 2.001 399.5
