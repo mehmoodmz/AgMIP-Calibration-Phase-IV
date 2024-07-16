@@ -106,11 +106,11 @@ options(warn=1)
 ## the protocol description file (including its name).  
 xls_path <-
   if (model_name == "CERES") {
-    file.path(root_dir, "data/CERES_Mehmood_v5.xlsx")
+    file.path(root_dir, "data/CERES_Mehmood_v6.xlsx")
   } else if (model_name == "CROPSIM") {
-    file.path(root_dir, "data/CROPSIM_Mehmood_v5.xlsx")
+    file.path(root_dir, "data/CROPSIM_Mehmood_v6.xlsx")
   } else {
-    file.path(root_dir, "data/NWHEAT_Mehmood_v5.xlsx")
+    file.path(root_dir, "data/NWHEAT_Mehmood_v6.xlsx")
   }
   
 # Set-up your model wrapper
